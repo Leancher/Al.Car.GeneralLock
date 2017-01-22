@@ -7,7 +7,7 @@
 
 #include <avr/io.h>
 
-# define F_CPU 16000UL
+# define F_CPU 16000UL//4000000UL
 #include <avr/power.h>
 #include <util/delay.h>
 #include <avr/wdt.h>
@@ -205,16 +205,16 @@ void set_state_door(byte _state)
 	if (_state==1)
 	{
 		actuator_1_set_state_1();
-		//actuator_2_set_state_1();
-		//actuator_3_set_state_1();
-		//actuator_4_set_state_1();
+		actuator_2_set_state_1();
+		actuator_3_set_state_1();
+		actuator_4_set_state_1();
 	}
 	else
 	{
 		actuator_1_set_state_0();
-		//actuator_2_set_state_0();
-		//actuator_3_set_state_0();
-		//actuator_4_set_state_0();
+		actuator_2_set_state_0();
+		actuator_3_set_state_0();
+		actuator_4_set_state_0();
 	}
 }
 
