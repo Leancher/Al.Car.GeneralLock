@@ -31,7 +31,7 @@
 // A0/PC0 - L298-2-In2
 
 int _current_state_device=1;
-#define ACTUATOR_HOLD 500
+#define ACTUATOR_HOLD 300
 typedef unsigned char byte;
 
 int get_state_door_switch()
@@ -255,7 +255,7 @@ void car_alarm_deactivated()
 void car_alarm_activated()
 {
 	set_state_door(0);
-	_current_state_device=2;
+	_current_state_device=0;
 	return;
 }
 
