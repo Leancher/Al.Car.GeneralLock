@@ -72,159 +72,136 @@ void button_enable()
 
 void drivers_disable()
 {
-	drivers_turn_off();
+	relay_drivers_set_state(0);
 		
-	driver_1_disable();
-	driver_2_disable();	
+	driver_1_set_state(0);
+	driver_2_set_state(0);	
 	
-	reset_driver_in_1();
-	reset_driver_in_2();
-	reset_driver_in_3();
-	reset_driver_in_4();
+	driver_in_1_set_state(0);
+	driver_in_2_set_state(0);
+	driver_in_3_set_state(0);
+	driver_in_4_set_state(0);
 	_delay_ms(1);	
 }
 
 void actuator_1_set_state_1()
 {
-	drivers_turn_on();
-	_delay_ms(1);	
-	driver_1_enable();
-	_delay_ms(1);	
-	set_driver_in_1();
+	driver_in_1_set_state(1);
 	_delay_ms(1);
-	reset_driver_in_2();
-	_delay_ms(ACTUATOR_HOLD);
-	drivers_disable();	
+	driver_in_2_set_state(0);
+	_delay_ms(ACTUATOR_HOLD);	
 }
 
 void actuator_1_set_state_0()
 {
-	drivers_turn_on();
+	driver_in_1_set_state(0);
 	_delay_ms(1);
-	driver_1_enable();
-	_delay_ms(1);
-	reset_driver_in_1();
-	_delay_ms(1);
-	set_driver_in_2();
+	driver_in_2_set_state(1);
 	_delay_ms(ACTUATOR_HOLD);
-	drivers_disable();
 }
 
 void actuator_2_set_state_1()
 {
-	drivers_turn_on();
+	driver_in_3_set_state(1);
 	_delay_ms(1);
-	driver_1_enable();
-	_delay_ms(1);
-	set_driver_in_3();
-	_delay_ms(1);
-	reset_driver_in_4();
+	driver_in_4_set_state(0);
 	_delay_ms(ACTUATOR_HOLD);
-	drivers_disable();
 }
 
 void actuator_2_set_state_0()
 {
-	drivers_turn_on();
+	driver_in_3_set_state(0);
 	_delay_ms(1);
-	driver_1_enable();
-	_delay_ms(1);
-	reset_driver_in_3();
-	_delay_ms(1);
-	set_driver_in_4();
+	driver_in_4_set_state(1);
 	_delay_ms(ACTUATOR_HOLD);
-	drivers_disable();
 }
 
 void actuator_3_set_state_1()
 {
-	drivers_turn_on();
+	driver_in_1_set_state(1);
 	_delay_ms(1);
-	driver_2_enable();
-	_delay_ms(1);
-	set_driver_in_1();
-	_delay_ms(1);
-	reset_driver_in_2();
+	driver_in_2_set_state(0);
 	_delay_ms(ACTUATOR_HOLD);
-	drivers_disable();
 }
 
 void actuator_3_set_state_0()
 {
-	drivers_turn_on();
+	driver_in_1_set_state(0);
 	_delay_ms(1);
-	driver_2_enable();
-	_delay_ms(1);
-	reset_driver_in_1();
-	_delay_ms(1);
-	set_driver_in_2();
+	driver_in_2_set_state(1);
 	_delay_ms(ACTUATOR_HOLD);
-	drivers_disable();
 }
 
 void actuator_4_set_state_1()
 {
-	drivers_turn_on();
+	driver_in_3_set_state(1);
 	_delay_ms(1);
-	driver_2_enable();
-	_delay_ms(1);
-	set_driver_in_3();
-	_delay_ms(1);
-	reset_driver_in_4();
+	driver_in_4_set_state(0);
 	_delay_ms(ACTUATOR_HOLD);
-	drivers_disable();
 }
 
 void actuator_4_set_state_0()
 {
-	drivers_turn_on();
+	driver_in_3_set_state(0);
 	_delay_ms(1);
-	driver_2_enable();
-	_delay_ms(1);
-	reset_driver_in_3();
-	_delay_ms(1);
-	set_driver_in_4();
+	driver_in_4_set_state(1);
 	_delay_ms(ACTUATOR_HOLD);
-	drivers_disable();
 }
 
 void change_state_indicator()
 {
 	if (_current_state_device==1)
 	{
-		set_state_indicator(1);
+		indicator_set_state(1);
 	}
 	else
 	{
-		set_state_indicator(0);
+		indicator_set_state(0);
 	}
 }
 
-void set_state_door(byte _state)
+void set_state_door(byte state)
 {
-	if (_state==1)
+	relay_drivers_set_state(1);
+	_delay_ms(1);
+	if (state==1)
 	{
+		driver_1_set_state(1);
+		_delay_ms(1);
 		actuator_1_set_state_1();
 		actuator_2_set_state_1();
+		driver_1_set_state(0);
+
+		driver_2_set_state(1);
+		_delay_ms(1);
 		actuator_3_set_state_1();
 		actuator_4_set_state_1();
+		driver_2_set_state(0);
 	}
 	else
 	{
+		driver_1_set_state(1);
+		_delay_ms(1);		
 		actuator_1_set_state_0();
 		actuator_2_set_state_0();
+		driver_1_set_state(0);
+
+		driver_2_set_state(1);
+		_delay_ms(1);
 		actuator_3_set_state_0();
 		actuator_4_set_state_0();
+		driver_2_set_state(0);
 	}
+	drivers_disable();
 }
 
 void unlock_trunk()
 {
 	if (_current_state_device==1)
 	{
-		trunk_actuator_set();
+		trunk_actuator_set_state(1);
 		_delay_ms(500);
-		trunk_actuator_reset();
+		trunk_actuator_set_state(0);
 	}
 	return;
 }
@@ -272,7 +249,7 @@ int main ()
 	button_enable();
 	
 	//Инициализация выходов для актуатора двери багажника
-	trunk_actuator_reset();
+	trunk_actuator_set_state(0);
 	//При включении устройства открыть все двери
 	set_state_door(1);
 	

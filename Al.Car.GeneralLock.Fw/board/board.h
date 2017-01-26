@@ -19,29 +19,19 @@ int is_alarm_open_pressed();
 void alarm_close_enable();
 int is_alarm_close_pressed();
 
-void set_state_indicator(byte _state);
+void indicator_set_state(byte state);
 
-void trunk_actuator_set();
-void trunk_actuator_reset();
+void trunk_actuator_set_state(byte state);
 
-void drivers_turn_on();
-void drivers_turn_off();
+void relay_drivers_set_state(byte state);
 
-void driver_1_enable();
-void driver_1_disable();
+void driver_1_set_state(byte state);
 
-void driver_2_enable();
-void driver_2_disable();
+void driver_2_set_state(byte state);
 
-void set_driver_in_1();
-void reset_driver_in_1();
-void set_driver_in_2();
-void reset_driver_in_2();
-void set_driver_in_3();
-void reset_driver_in_3();
-void set_driver_in_3();
-void reset_driver_in_3();
-void set_driver_in_4();
-void reset_driver_in_4();
+void driver_in_1_set_state(byte state);
+void driver_in_2_set_state(byte state);
+void driver_in_3_set_state(byte state);
+void driver_in_4_set_state(byte state);
 
 #endif /* BOARD_H_ */

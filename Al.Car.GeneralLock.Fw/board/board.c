@@ -93,110 +93,57 @@ int is_alarm_close_pressed()
 	return 1;
 }
 
-void set_state_indicator(byte _state)
+void indicator_set_state(byte state)
 {
 	setbit(DDRD,6,1);
-	setbit(PORTD,6,_state);
+	setbit(PORTD,6,state);
 }
 
-void trunk_actuator_set()
+void trunk_actuator_set_state(byte state)
 {
 	setbit(DDRA,7,1);
-	setbit(PORTA,7,1);
-}
-
-void trunk_actuator_reset()
-{
-	setbit(DDRA,7,1);
-	setbit(PORTA,7,0);	
+	setbit(PORTA,7,state);
 }
 
 //Включить драйверы
-void drivers_turn_on()
+void relay_drivers_set_state(byte state)
 {
 	setbit(DDRA,4,1);
-	setbit(PORTA,4,1);	
+	setbit(PORTA,4,state);	
 }
 
-//Выключить драйверы
-void drivers_turn_off()
-{
-	setbit(DDRA,4,1);
-	setbit(PORTA,4,0);	
-}
-
-//Активация драйвера 1
-void driver_1_enable()
+void driver_1_set_state(byte state)
 {
 	setbit(DDRA,5,1);
-	setbit(PORTA,5,1);
+	setbit(PORTA,5,state);
 }
 
-//Деактивация драйвера 1
-void driver_1_disable()
-{
-	setbit(DDRA,5,1);
-	setbit(PORTA,5,0);
-}
-
-//Активация драйвера 2
-void driver_2_enable()
+void driver_2_set_state(byte state)
 {
 	setbit(DDRA,6,1);
-	setbit(PORTA,6,1);
+	setbit(PORTA,6,state);
 }
 
-//Деактивация драйвера 2
-void driver_2_disable()
-{
-	setbit(DDRA,6,1);
-	setbit(PORTA,6,0);
-}
-
-void set_driver_in_1()
+void driver_in_1_set_state(byte state)
 {
 	setbit(PORTC,0,1);
-	setbit(PORTC,0,1);
+	setbit(PORTC,0,state);
 }
 
-void reset_driver_in_1()
-{
-	setbit(PORTC,0,1);
-	setbit(PORTC,0,0);
-}
-
-void set_driver_in_2()
+void driver_in_2_set_state(byte state)
 {
 	setbit(PORTC,1,1);
-	setbit(PORTC,1,1);
+	setbit(PORTC,1,state);
 }
 
-void reset_driver_in_2()
-{
-	setbit(PORTC,1,1);
-	setbit(PORTC,1,0);
-}
-
-void set_driver_in_3()
+void driver_in_3_set_state(byte state)
 {
 	setbit(PORTC,6,1);
-	setbit(PORTC,6,1);
+	setbit(PORTC,6,state);
 }
 
-void reset_driver_in_3()
-{
-	setbit(PORTC,6,1);
-	setbit(PORTC,6,0);
-}
-
-void set_driver_in_4()
+void driver_in_4_set_state(byte state)
 {
 	setbit(PORTC,7,1);
-	setbit(PORTC,7,1);
-}
-
-void reset_driver_in_4()
-{
-	setbit(PORTC,7,1);
-	setbit(PORTC,7,0);
+	setbit(PORTC,7,state);
 }
