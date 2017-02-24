@@ -43,14 +43,14 @@ void unused_pin_init()
 //Установка вывода как входа
 void door_switch_enable()
 {
-	setbit(DDRD,4,0);
-	setbit(PORTD,4,1);
+	setbit(DDRD,6,0);
+	setbit(PORTD,6,1);
 }
 
 //Получение нажатия кнопки
-int is_door_switch_pressed()
+int door_switch_is_pressed()
 {
-	if (getbit(PIND,4)) {return 0;}
+	if (getbit(PIND,6)) {return 0;}
 	return 1;	
 }
 
@@ -58,92 +58,169 @@ int is_door_switch_pressed()
 //Кнопка открытия багажника
 void trunk_button_enable()
 {
-	setbit(DDRD,5,0);
-	setbit(PORTD,5,1);	
+	setbit(DDRA,7,0);
+	setbit(PORTA,7,1);	
 }
 
 //Получение нажатия кнопки
-int is_trunk_button_pressed()
+int trunk_button_is_pressed()
 {
-	if (getbit(PIND,5)) {return 0;}
+	if (getbit(PINA,7)) {return 0;}
 	return 1;
 }
 
-void alarm_open_enable()
+void rc_open_enable()
 {
-	setbit(DDRD,2,0);
-	setbit(PORTD,2,1);	
+	setbit(DDRA,5,0);
+	setbit(PORTA,5,1);	
 }
 
-int is_alarm_open_pressed()
+int rc_open_is_pressed()
 {
-	if (getbit(PIND,2)) {return 0;}
+	if (getbit(PINA,5)) {return 0;}
 	return 1;
 }
 
-void alarm_close_enable()
+void rc_close_enable()
 {
-	setbit(DDRD,3,0);
-	setbit(PORTD,3,1);	
+	setbit(DDRA,4,0);
+	setbit(PORTA,4,1);	
 }
 
-int is_alarm_close_pressed()
+int rc_close_is_pressed()
 {
-	if (getbit(PIND,3)) {return 0;}
+	if (getbit(PINA,4)) {return 0;}
 	return 1;
 }
 
-void indicator_set_state(byte state)
+void board_led_set_state(byte state)
 {
-	setbit(DDRD,6,1);
-	setbit(PORTD,6,state);
+	setbit(DDRD,7,1);
+	setbit(PORTD,7,state);
 }
 
 void trunk_actuator_set_state(byte state)
 {
-	setbit(DDRA,7,1);
-	setbit(PORTA,7,state);
+	setbit(DDRC,0,1);
+	setbit(PORTC,0,state);
 }
 
-//Включить драйверы
-void relay_drivers_set_state(byte state)
+void indicator_set_state(byte state)
 {
-	setbit(DDRA,4,1);
-	setbit(PORTA,4,state);	
+	setbit(DDRB,7,1);
+	setbit(PORTB,7,state);	
 }
 
-void driver_1_set_state(byte state)
+void driver_locker_1_enable(byte state)
 {
-	setbit(DDRA,5,1);
-	setbit(PORTA,5,state);
+	setbit(DDRB,0,1);
+	setbit(PORTB,0,state);
 }
 
-void driver_2_set_state(byte state)
+void driver_locker_2_enable(byte state)
 {
-	setbit(DDRA,6,1);
-	setbit(PORTA,6,state);
+	setbit(DDRB,1,1);
+	setbit(PORTB,1,state);
+}
+
+void driver_door_handle_enable(byte state)
+{
+	setbit(DDRB,6,1);
+	setbit(PORTB,6,state);
 }
 
 void driver_in_1_set_state(byte state)
 {
-	setbit(PORTC,0,1);
-	setbit(PORTC,0,state);
+	setbit(PORTB,2,1);
+	setbit(PORTB,2,state);
 }
 
 void driver_in_2_set_state(byte state)
 {
-	setbit(PORTC,1,1);
-	setbit(PORTC,1,state);
+	setbit(PORTB,3,1);
+	setbit(PORTB,3,state);
 }
 
 void driver_in_3_set_state(byte state)
 {
-	setbit(PORTC,6,1);
-	setbit(PORTC,6,state);
+	setbit(PORTB,4,1);
+	setbit(PORTB,4,state);
 }
 
 void driver_in_4_set_state(byte state)
 {
+	setbit(PORTB,5,1);
+	setbit(PORTB,5,state);
+}
+
+void button_door_1_enable()
+{
+	setbit(DDRA,0,0);
+	setbit(PORTA,0,1);
+}
+
+int button_door_1_is_pressed()
+{
+	if (getbit(PINA,0)) {return 0;}
+	return 1;
+}
+
+void button_door_2_enable()
+{
+	setbit(DDRA,1,0);
+	setbit(PORTA,1,1);
+}
+
+int button_door_2_is_pressed()
+{
+	if (getbit(PINA,1)) {return 0;}
+	return 1;
+}
+
+void button_door_3_enable()
+{
+	setbit(DDRA,2,0);
+	setbit(PORTA,2,1);
+}
+
+int button_door_3_is_pressed()
+{
+	if (getbit(PINA,2)) {return 0;}
+	return 1;
+}
+
+void button_door_4_enable()
+{
+	setbit(DDRA,3,0);
+	setbit(PORTA,3,1);
+}
+
+int button_door_4_is_pressed()
+{
+	if (getbit(PINA,3)) {return 0;}
+	return 1;
+}
+
+void door_terminal_enable()
+{
+	setbit(DDRC,7,0);
 	setbit(PORTC,7,1);
-	setbit(PORTC,7,state);
+}
+
+int door_terminal_is_pressed()
+{
+	if (getbit(PINC,7)) {return 0;}
+	return 1;
+}
+
+void stop_terminal_enable()
+{
+	setbit(DDRC,6,0);
+	setbit(PORTC,6,1);
+}
+
+int stop_terminal_is_pressed()
+{
+	if (getbit(PINC,6)) {return 0;}
+	return 1;
 }

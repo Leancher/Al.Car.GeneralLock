@@ -7,28 +7,12 @@
 
 #include <avr/io.h>
 
-# define F_CPU 16000UL//4000000UL
+# define F_CPU 8000000UL//4000000UL
 #include <avr/power.h>
 #include <util/delay.h>
 #include <avr/wdt.h>
 
 #include "board/board.h"
-
-// D2/PD2 - Indicator
-// D3/PD3 - Trunk button - Button 1
-// D4/PD4 - Door button -  Button 2
-// D5/PD5 - Alarm open  -  Button 3
-// D6/PD6 - Alarm close  - button 4
-// D7/PD7 - L298-1-In3
-// D8/PB0 - L298-1-In4
-// D9/PB1 - L298-1-In2
-// D10/PB2 - L298-1-In1
-// A5/PC5 - L293-In1
-// A4/PC4 - Door switch button - Button 5
-// A3/PC3 - L298-2-In4
-// A2/PC2 - L298-2-In3
-// A1/PC1 - L298-2-In1
-// A0/PC0 - L298-2-In2
 
 int _current_state_device=1;
 #define ACTUATOR_HOLD 300
@@ -38,44 +22,44 @@ int get_state_door_switch()
 {
 	door_switch_enable();
 	_delay_ms(1);
-	return is_door_switch_pressed();
+	return door_switch_is_pressed();
 }
 
 int get_state_trunk_button()
 {
 	trunk_button_enable();
 	_delay_ms(1);
-	return is_trunk_button_pressed();
+	return trunk_button_is_pressed();
 }
 
 int get_state_alarm_open()
 {
-	alarm_open_enable();
+	rc_open_enable();
 	_delay_ms(1);
-	return is_alarm_open_pressed();
+	return rc_open_is_pressed();
 }
 
 int get_state_alarm_close()
 {
-	alarm_close_enable();
+	rc_close_enable();
 	_delay_ms(1);
-	return is_alarm_close_pressed();
+	return rc_close_is_pressed();
 }
 
 void button_enable()
 {
 	door_switch_enable();
 	trunk_button_enable();
-	alarm_close_enable();
-	alarm_open_enable();
+	rc_close_enable();
+	rc_open_enable();
 }
 
 void drivers_disable()
 {
 	relay_drivers_set_state(0);
 		
-	driver_1_set_state(0);
-	driver_2_set_state(0);	
+	driver_locker_1_enable(0);
+	driver_locker_2_enable(0);	
 	
 	driver_in_1_set_state(0);
 	driver_in_2_set_state(0);
@@ -152,11 +136,11 @@ void change_state_indicator()
 {
 	if (_current_state_device==1)
 	{
-		indicator_set_state(1);
+		board_led_set_state(1);
 	}
 	else
 	{
-		indicator_set_state(0);
+		board_led_set_state(0);
 	}
 }
 
@@ -166,31 +150,31 @@ void set_state_door(byte state)
 	_delay_ms(1);
 	if (state==1)
 	{
-		driver_1_set_state(1);
+		driver_locker_1_enable(1);
 		_delay_ms(1);
 		actuator_1_set_state_1();
 		actuator_2_set_state_1();
-		driver_1_set_state(0);
+		driver_locker_1_enable(0);
 
-		driver_2_set_state(1);
+		driver_locker_2_enable(1);
 		_delay_ms(1);
 		actuator_3_set_state_1();
 		actuator_4_set_state_1();
-		driver_2_set_state(0);
+		driver_locker_2_enable(0);
 	}
 	else
 	{
-		driver_1_set_state(1);
+		driver_locker_1_enable(1);
 		_delay_ms(1);		
 		actuator_1_set_state_0();
 		actuator_2_set_state_0();
-		driver_1_set_state(0);
+		driver_locker_1_enable(0);
 
-		driver_2_set_state(1);
+		driver_locker_2_enable(1);
 		_delay_ms(1);
 		actuator_3_set_state_0();
 		actuator_4_set_state_0();
-		driver_2_set_state(0);
+		driver_locker_2_enable(0);
 	}
 	drivers_disable();
 }
