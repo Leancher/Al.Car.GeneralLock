@@ -24,7 +24,7 @@ void trunk_actuator_set_state(byte state);
 void indicator_set_state(byte state);
 void driver_locker_1_enable(byte state);
 void driver_locker_2_enable(byte state);
-void driver_door_handle_enable(byte state)
+void driver_door_handle_enable(byte state);
 
 void driver_in_1_set_state(byte state);
 void driver_in_2_set_state(byte state);

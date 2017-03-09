@@ -15,7 +15,7 @@
 #include "board/board.h"
 
 int _current_state_device=1;
-#define ACTUATOR_HOLD 300
+#define ACTUATOR_HOLD 500
 typedef unsigned char byte;
 
 int get_state_door_switch()
@@ -56,8 +56,6 @@ void button_enable()
 
 void drivers_disable()
 {
-	relay_drivers_set_state(0);
-		
 	driver_locker_1_enable(0);
 	driver_locker_2_enable(0);	
 	
@@ -146,8 +144,6 @@ void change_state_indicator()
 
 void set_state_door(byte state)
 {
-	relay_drivers_set_state(1);
-	_delay_ms(1);
 	if (state==1)
 	{
 		driver_locker_1_enable(1);
@@ -224,7 +220,7 @@ int main ()
 {
 	//Отключение неиспользуемых функций
 	PRR0=(1<<PRTWI)||(1<<PRTIM2)||(1<<PRTIM0)||(1<<PRUSART1)||(1<<PRTIM1)||(1<<PRSPI)||(1<<PRUSART0)||(1<<PRADC);
-	unused_pin_init();
+//	unused_pin_init();
 	
 	wdt_enable(WDTO_8S);
 	

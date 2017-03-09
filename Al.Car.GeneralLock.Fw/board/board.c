@@ -4,41 +4,41 @@
 #define setbit(port,bit,val)	{if ((val)) {(port)|= (1 << (bit));} else {(port) &= ~(1 << (bit));}}
 
 //Инициализация неиспользуемых выводов для экономии энергии
-void unused_pin_init()
-{
-	setbit(DDRA,0,0);
-	setbit(PORTA,0,1);
-	setbit(DDRA,1,0);
-	setbit(PORTA,1,1);	
-	setbit(DDRA,2,0);
-	setbit(PORTA,2,1);
-	setbit(DDRA,3,0);
-	setbit(PORTA,3,1);	
-	
-	setbit(DDRB,0,0);
-	setbit(PORTB,0,1);	
-	setbit(DDRB,1,0);
-	setbit(PORTB,1,1);
-	setbit(DDRB,2,0);
-	setbit(PORTB,2,1);	
-	setbit(DDRB,3,0);
-	setbit(PORTB,3,1);	
-	setbit(DDRB,4,0);
-	setbit(PORTB,4,1);
-	setbit(DDRB,5,1);
-	setbit(PORTB,5,0);
-	setbit(DDRB,6,1);
-	setbit(PORTB,6,0);
-	setbit(DDRB,7,1);
-	setbit(PORTB,7,0);	
-	
-	setbit(DDRD,0,0);
-	setbit(PORTD,0,1);
-	setbit(DDRD,1,0);
-	setbit(PORTD,1,1);
-	setbit(DDRD,7,1);
-	setbit(PORTD,7,0);
-}
+// void unused_pin_init()
+// {
+// 	setbit(DDRA,0,0);
+// 	setbit(PORTA,0,1);
+// 	setbit(DDRA,1,0);
+// 	setbit(PORTA,1,1);	
+// 	setbit(DDRA,2,0);
+// 	setbit(PORTA,2,1);
+// 	setbit(DDRA,3,0);
+// 	setbit(PORTA,3,1);	
+// 	
+// 	setbit(DDRB,0,0);
+// 	setbit(PORTB,0,1);	
+// 	setbit(DDRB,1,0);
+// 	setbit(PORTB,1,1);
+// 	setbit(DDRB,2,0);
+// 	setbit(PORTB,2,1);	
+// 	setbit(DDRB,3,0);
+// 	setbit(PORTB,3,1);	
+// 	setbit(DDRB,4,0);
+// 	setbit(PORTB,4,1);
+// 	setbit(DDRB,5,1);
+// 	setbit(PORTB,5,0);
+// 	setbit(DDRB,6,1);
+// 	setbit(PORTB,6,0);
+// 	setbit(DDRB,7,1);
+// 	setbit(PORTB,7,0);	
+// 	
+// 	setbit(DDRD,0,0);
+// 	setbit(PORTD,0,1);
+// 	setbit(DDRD,1,0);
+// 	setbit(PORTD,1,1);
+// 	setbit(DDRD,7,1);
+// 	setbit(PORTD,7,0);
+// }
 
 //Установка вывода как входа
 void door_switch_enable()
