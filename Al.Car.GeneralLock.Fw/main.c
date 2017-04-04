@@ -15,7 +15,7 @@
 #include "board/board.h"
 
 int _current_state_device=1;
-#define ACTUATOR_HOLD 500
+#define ACTUATOR_HOLD 300
 typedef unsigned char byte;
 
 int get_state_door_switch()
@@ -56,9 +56,6 @@ void button_enable()
 
 void drivers_disable()
 {
-	driver_locker_1_enable(0);
-	driver_locker_2_enable(0);	
-	
 	driver_in_1_set_state(0);
 	driver_in_2_set_state(0);
 	driver_in_3_set_state(0);
@@ -146,31 +143,39 @@ void set_state_door(byte state)
 {
 	if (state==1)
 	{
-		driver_locker_1_enable(1);
+		driver_locker_1_set_state(1);
 		_delay_ms(1);
 		actuator_1_set_state_1();
+		drivers_disable();
 		actuator_2_set_state_1();
-		driver_locker_1_enable(0);
+		drivers_disable();
+		driver_locker_1_set_state(0);
 
-		driver_locker_2_enable(1);
+		driver_locker_2_set_state(1);
 		_delay_ms(1);
 		actuator_3_set_state_1();
+		drivers_disable();
 		actuator_4_set_state_1();
-		driver_locker_2_enable(0);
+		drivers_disable();
+		driver_locker_2_set_state(0);
 	}
 	else
 	{
-		driver_locker_1_enable(1);
+		driver_locker_1_set_state(1);
 		_delay_ms(1);		
 		actuator_1_set_state_0();
+		drivers_disable();
 		actuator_2_set_state_0();
-		driver_locker_1_enable(0);
+		drivers_disable();
+		driver_locker_1_set_state(0);
 
-		driver_locker_2_enable(1);
+		driver_locker_2_set_state(1);
 		_delay_ms(1);
 		actuator_3_set_state_0();
+		drivers_disable();
 		actuator_4_set_state_0();
-		driver_locker_2_enable(0);
+		drivers_disable();
+		driver_locker_2_set_state(0);
 	}
 	drivers_disable();
 }
@@ -219,7 +224,7 @@ void car_alarm_activated()
 int main ()
 {
 	//Отключение неиспользуемых функций
-	PRR0=(1<<PRTWI)||(1<<PRTIM2)||(1<<PRTIM0)||(1<<PRUSART1)||(1<<PRTIM1)||(1<<PRSPI)||(1<<PRUSART0)||(1<<PRADC);
+	//PRR0=(1<<PRTWI)||(1<<PRTIM2)||(1<<PRTIM0)||(1<<PRUSART1)||(1<<PRTIM1)||(1<<PRSPI)||(1<<PRUSART0)||(1<<PRADC);
 //	unused_pin_init();
 	
 	wdt_enable(WDTO_8S);
@@ -229,10 +234,16 @@ int main ()
 	button_enable();
 	
 	//Инициализация выходов для актуатора двери багажника
-	trunk_actuator_set_state(0);
+	//trunk_actuator_set_state(0);
 	//При включении устройства открыть все двери
-	set_state_door(1);
+	//set_state_door(1);
 	
+// 	driver_locker_1_set_state(1);
+// 	driver_in_1_set_state(0);
+// 	_delay_ms(500);
+// 	driver_in_1_set_state(1);
+// 	driver_locker_1_set_state(0);
+
 	while (1)
 	{
 		//currentStateDevice=0 - lock all doors
@@ -242,12 +253,12 @@ int main ()
 		wdt_reset();
 		
 		
-		if (get_state_trunk_button()==1) unlock_trunk();
-		if (get_state_door_switch()==1) change_state_device();
-		if (get_state_alarm_close()==1) car_alarm_activated();
-		if (get_state_alarm_open()==1) car_alarm_deactivated();
-
-		change_state_indicator();
+// 		if (get_state_trunk_button()==1) unlock_trunk();
+ 		if (get_state_door_switch()==1) change_state_device();
+// 		if (get_state_alarm_close()==1) car_alarm_activated();
+// 		if (get_state_alarm_open()==1) car_alarm_deactivated();
+// 
+ 		change_state_indicator();
 
 		_delay_ms(50);
 	}

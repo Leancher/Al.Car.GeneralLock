@@ -111,13 +111,13 @@ void indicator_set_state(byte state)
 	setbit(PORTB,7,state);	
 }
 
-void driver_locker_1_enable(byte state)
+void driver_locker_1_set_state(byte state)
 {
 	setbit(DDRB,0,1);
 	setbit(PORTB,0,state);
 }
 
-void driver_locker_2_enable(byte state)
+void driver_locker_2_set_state(byte state)
 {
 	setbit(DDRB,1,1);
 	setbit(PORTB,1,state);
@@ -131,25 +131,25 @@ void driver_door_handle_enable(byte state)
 
 void driver_in_1_set_state(byte state)
 {
-	setbit(PORTB,2,1);
+	setbit(DDRB,2,1);
 	setbit(PORTB,2,state);
 }
 
 void driver_in_2_set_state(byte state)
 {
-	setbit(PORTB,3,1);
+	setbit(DDRB,3,1);
 	setbit(PORTB,3,state);
 }
 
 void driver_in_3_set_state(byte state)
 {
-	setbit(PORTB,4,1);
+	setbit(DDRB,4,1);
 	setbit(PORTB,4,state);
 }
 
 void driver_in_4_set_state(byte state)
 {
-	setbit(PORTB,5,1);
+	setbit(DDRB,5,1);
 	setbit(PORTB,5,state);
 }
 
