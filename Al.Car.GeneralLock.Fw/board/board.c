@@ -40,6 +40,12 @@
 // 	setbit(PORTD,7,0);
 // }
 
+void relay_siren_set_state(byte state)
+{
+	setbit(DDRC,1,1);
+	setbit(PORTC,1,state);	
+}
+
 //Установка вывода как входа
 void door_switch_enable()
 {
@@ -69,25 +75,25 @@ int trunk_button_is_pressed()
 	return 1;
 }
 
-void rc_open_enable()
+void keychain_open_enable()
 {
 	setbit(DDRA,5,0);
 	setbit(PORTA,5,1);	
 }
 
-int rc_open_is_pressed()
+int keychain_open_is_pressed()
 {
 	if (getbit(PINA,5)) {return 0;}
 	return 1;
 }
 
-void rc_close_enable()
+void keychain_close_enable()
 {
 	setbit(DDRA,4,0);
 	setbit(PORTA,4,1);	
 }
 
-int rc_close_is_pressed()
+int keychain_close_is_pressed()
 {
 	if (getbit(PINA,4)) {return 0;}
 	return 1;

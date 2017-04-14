@@ -7,17 +7,19 @@ typedef unsigned char byte;
 
 void unused_pin_init();
 
+void relay_siren_set_state(byte state);
+
 void door_switch_enable();
 int door_switch_is_pressed();
 
 void trunk_button_enable();
 int trunk_button_is_pressed();
 
-void rc_open_enable();
-int rc_open_is_pressed();
+void keychain_open_enable();
+int keychain_open_is_pressed();
 
-void rc_close_enable();
-int rc_close_is_pressed();
+void keychain_close_enable();
+int keychain_close_is_pressed();
 
 void board_led_set_state(byte state);
 void trunk_actuator_set_state(byte state);
