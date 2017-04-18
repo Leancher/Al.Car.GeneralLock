@@ -158,8 +158,6 @@ void set_state_door(byte state)
 		door_3_unlock();
 		drivers_disable();
 		door_4_unlock();
-		drivers_disable();
-		driver_locker_2_set_state(0);
 	}
 	else
 	{
@@ -176,10 +174,9 @@ void set_state_door(byte state)
 		door_3_lock();
 		drivers_disable();
 		door_4_lock();
-		drivers_disable();
-		driver_locker_2_set_state(0);
 	}
 	drivers_disable();
+	driver_locker_2_set_state(0);
 }
 
 void unlock_trunk()
@@ -252,7 +249,8 @@ int main ()
 	trunk_actuator_set_state(0);
 	//При включении устройства открыть все двери
 	set_state_door(1);
-
+	//Задержка для инициализации радиобрелка
+	_delay_ms(1200);
 	while (1)
 	{
 		//currentStateDevice=0 - lock all doors
@@ -265,7 +263,7 @@ int main ()
  		if (get_state_door_switch()==1) change_state_device();
  		if (get_state_keychain_close()==1) lock_doors();
  		if (get_state_keychain_open()==1) unlock_doors();
- 
+
  		change_state_indicator();
 
 		_delay_ms(50);
