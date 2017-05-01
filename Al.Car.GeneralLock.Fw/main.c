@@ -17,7 +17,8 @@
 #define ACTUATOR_HOLD 300
 #define SIREN_BEEP_DURATION 100
 
-int _current_state_device=1;
+int car_driver_presence=0;
+int state_doors=1;
 typedef unsigned char byte;
 
 int get_voltage()
@@ -138,13 +139,13 @@ void door_4_lock()
 
 void change_state_indicator()
 {
-	if (_current_state_device==1)
+	if (state_doors==1)
 	{
-		board_led_set_state(1);
+		indicator_set_state(1);
 	}
 	else
 	{
-		board_led_set_state(0);
+		indicator_set_state(0);
 	}
 }
 
@@ -188,7 +189,7 @@ void set_state_door(byte state)
 
 void unlock_trunk()
 {
-	if (_current_state_device==1)
+	if (state_doors==1)
 	{
 		trunk_actuator_set_state(1);
 		_delay_ms(500);
@@ -200,16 +201,16 @@ void unlock_trunk()
 void change_state_device()
 {
 	//Уставновка состояния замков на противоположное от значения текущего состояния
-	if (_current_state_device==1) set_state_door(0);
-	if (_current_state_device==0) set_state_door(1);
+	if (state_doors==1) set_state_door(0);
+	if (state_doors==0) set_state_door(1);
 	//Переключаем текущее состояние
-	if (_current_state_device==1)
+	if (state_doors==1)
 	{
-		_current_state_device=0;
+		state_doors=0;
 	}
 	else
 	{
-		_current_state_device=1;
+		state_doors=1;
 	}
 }
 
@@ -228,7 +229,7 @@ void unlock_doors()
 {
 	siren_beep(2);
 	set_state_door(1);
-	_current_state_device=1;
+	state_doors=1;
 	return;
 }
 
@@ -236,8 +237,57 @@ void lock_doors()
 {
 	siren_beep(1);
 	set_state_door(0);
-	_current_state_device=0;
+	state_doors=0;
 	return;
+}
+
+byte get_state_door_terminal()
+{
+	door_switch_enable();
+	_delay_ms(1);
+	return door_teminal_is_pressed();
+}
+
+byte get_state_stop()
+{
+	button_stop_enable();
+	_delay_ms(1);
+	return button_stop_is_pressed();
+}
+
+void check_car_driver_presence()
+{
+	if (get_voltage()>12)
+	{
+		if (car_driver_presence==0)
+		{
+			if (get_state_door_terminal()==1)
+			{
+				if (get_state_stop()==1)
+				{
+					set_state_door(1);
+					car_driver_presence=1;
+					state_doors=0;
+				}
+			}
+		}
+		else
+		{
+			if (get_state_door_terminal()==0)
+			{
+				car_driver_presence=0;
+			}
+		}
+	}
+	else
+	{
+		if (car_driver_presence==1)
+		{
+			set_state_door(0);
+			car_driver_presence=0;
+			state_doors=1;
+		}
+	}
 }
 
 int main ()
@@ -260,19 +310,15 @@ int main ()
 	_delay_ms(1200);
 	while (1)
 	{
-		//currentStateDevice=0 - lock all doors
-		//currentStateDevice=1 - unlock all doors
-		//currentStateDevice=2 - car alarm actived
-	
 		wdt_reset();
 		
  		if (get_state_trunk_button()==1) unlock_trunk();
  		if (get_state_door_switch()==1) change_state_device();
  		if (get_state_keychain_close()==1) lock_doors();
  		if (get_state_keychain_open()==1) unlock_doors();
-
+		check_car_driver_presence();
  		change_state_indicator();
-
+		
 		_delay_ms(50);
 	}
 }
