@@ -63,7 +63,7 @@ void door_terminal_enable()
 	setbit(PORTC,7,1);
 }
 
-byte door_teminal_is_pressed()
+byte door_terminal_is_pressed()
 {
 	if (getbit(PINC,7)) {return 0;}
 	return 1;

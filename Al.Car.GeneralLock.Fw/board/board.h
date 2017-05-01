@@ -12,7 +12,7 @@ void adc_init_voltage_acc();
 void button_stop_enable();
 byte button_stop_is_pressed();
 void door_terminal_enable();
-byte door_teminal_is_pressed();
+byte door_terminal_is_pressed();
 void relay_siren_set_state(byte state);
 void door_switch_enable();
 byte door_switch_is_pressed();
@@ -40,9 +40,5 @@ void button_door_3_enable();
 int button_door_3_is_pressed();
 void button_door_4_enable();
 int button_door_4_is_pressed();
-void door_terminal_enable();
-int door_terminal_is_pressed();
-void stop_terminal_enable();
-int stop_terminal_is_pressed();
 
 #endif /* BOARD_H_ */

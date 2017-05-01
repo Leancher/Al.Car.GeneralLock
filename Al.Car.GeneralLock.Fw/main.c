@@ -17,7 +17,7 @@
 #define ACTUATOR_HOLD 300
 #define SIREN_BEEP_DURATION 100
 
-int car_driver_presence=0;
+int door_is_opened=0;
 int state_doors=1;
 typedef unsigned char byte;
 
@@ -26,42 +26,6 @@ int get_voltage()
 	int val=0;
 	val=adc_read_average(3)*ADC_VOLT_MULTIPLIER_MV;//+DIODE_CORRECTION;
 	return val;
-}
-
-int get_state_door_switch()
-{
-	door_switch_enable();
-	_delay_ms(1);
-	return door_switch_is_pressed();
-}
-
-int get_state_trunk_button()
-{
-	button_trunk_enable();
-	_delay_ms(1);
-	return button_trunk_is_pressed();
-}
-
-int get_state_keychain_open()
-{
-	keychain_open_enable();
-	_delay_ms(1);
-	return keychain_open_is_pressed();
-}
-
-int get_state_keychain_close()
-{
-	keychain_close_enable();
-	_delay_ms(1);
-	return keychain_close_is_pressed();
-}
-
-void button_enable()
-{
-	door_switch_enable();
-	button_trunk_enable();
-	keychain_close_enable();
-	keychain_open_enable();
 }
 
 void drivers_disable()
@@ -137,17 +101,7 @@ void door_4_lock()
 	_delay_ms(ACTUATOR_HOLD);
 }
 
-void change_state_indicator()
-{
-	if (state_doors==1)
-	{
-		indicator_set_state(1);
-	}
-	else
-	{
-		indicator_set_state(0);
-	}
-}
+
 
 void set_state_door(byte state)
 {
@@ -195,7 +149,20 @@ void unlock_trunk()
 		_delay_ms(500);
 		trunk_actuator_set_state(0);
 	}
-	return;
+}
+
+void change_state_indicator()
+{
+	if (state_doors==1)
+	{
+		indicator_set_state(1);
+		board_led_set_state(1);
+	}
+	else
+	{
+		indicator_set_state(0);
+		board_led_set_state(0);
+	}
 }
 
 void change_state_device()
@@ -230,7 +197,6 @@ void unlock_doors()
 	siren_beep(2);
 	set_state_door(1);
 	state_doors=1;
-	return;
 }
 
 void lock_doors()
@@ -238,84 +204,90 @@ void lock_doors()
 	siren_beep(1);
 	set_state_door(0);
 	state_doors=0;
-	return;
-}
-
-byte get_state_door_terminal()
-{
-	door_switch_enable();
-	_delay_ms(1);
-	return door_teminal_is_pressed();
-}
-
-byte get_state_stop()
-{
-	button_stop_enable();
-	_delay_ms(1);
-	return button_stop_is_pressed();
 }
 
 void check_car_driver_presence()
 {
-	if (get_voltage()>12)
+	static int index=0;
+	//Включено зажигание
+	if (get_voltage()>8000)
 	{
-		if (car_driver_presence==0)
+		//Выполняется первый раз
+		if (door_is_opened==0)
 		{
-			if (get_state_door_terminal()==1)
+			//Дверь закрыты
+			if (door_terminal_is_pressed()==1)
 			{
-				if (get_state_stop()==1)
+				//Нажата педаль тормоза
+				if (button_stop_is_pressed()==1)
 				{
-					set_state_door(1);
-					car_driver_presence=1;
+					//Задержка перед блокировкой дверей
+					if (index<20) 
+					{
+						index++;
+						return;
+					}
+					index=0;
+					set_state_door(0);
+					door_is_opened=1;
 					state_doors=0;
 				}
 			}
 		}
 		else
 		{
-			if (get_state_door_terminal()==0)
-			{
-				car_driver_presence=0;
-			}
+			if (door_terminal_is_pressed()==0) door_is_opened=0;
 		}
 	}
 	else
 	{
-		if (car_driver_presence==1)
+		if (door_is_opened==1)
 		{
-			set_state_door(0);
-			car_driver_presence=0;
+			set_state_door(1);
+			door_is_opened=0;
 			state_doors=1;
 		}
 	}
 }
 
-int main ()
+void button_enable()
+{
+	door_switch_enable();
+	button_trunk_enable();
+	keychain_close_enable();
+	keychain_open_enable();
+	button_stop_enable();
+	door_terminal_enable();
+	door_switch_enable();
+}
+
+void board_init()
 {
 	//Отключение неиспользуемых функций
 	//PRR0=(1<<PRTWI)||(1<<PRTIM2)||(1<<PRTIM0)||(1<<PRUSART1)||(1<<PRTIM1)||(1<<PRSPI)||(1<<PRUSART0)||(1<<PRADC);
-//	unused_pin_init();
-	
-	wdt_enable(WDTO_8S);
-	
+	//unused_pin_init();	
 	drivers_disable();
-	
 	button_enable();
-	
 	//Инициализация выходов для актуатора двери багажника
 	trunk_actuator_set_state(0);
 	//При включении устройства открыть все двери
 	set_state_door(1);
+	adc_init_voltage_acc();
 	//Задержка для инициализации радиобрелка
-	_delay_ms(1200);
+	_delay_ms(1200);	
+}
+
+int main ()
+{
+	wdt_enable(WDTO_8S);
+	board_init();
 	while (1)
 	{
 		wdt_reset();
-		
- 		if (get_state_trunk_button()==1) unlock_trunk();
- 		if (get_state_door_switch()==1) change_state_device();
- 		if (get_state_keychain_close()==1) lock_doors();
- 		if (get_state_keychain_open()==1) unlock_doors();
+ 		if (button_trunk_is_pressed()==1) unlock_trunk();
+ 		if (door_switch_is_pressed()==1) change_state_device();
+ 		if (keychain_close_is_pressed()==1) lock_doors();
+ 		if (keychain_open_is_pressed()==1) unlock_doors();
 		check_car_driver_presence();
  		change_state_indicator();
 		
