@@ -152,9 +152,16 @@
     <Compile Include="board\board.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="refs\bwl_adc.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="refs\bwl_adc.h">
+      <SubType>compile</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="board" />
+    <Folder Include="refs" />
   </ItemGroup>
   <Import Project="$(AVRSTUDIO_EXE_PATH)\\Vs\\Compiler.targets" />
 </Project>

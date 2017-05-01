@@ -40,36 +40,60 @@
 // 	setbit(PORTD,7,0);
 // }
 
+void adc_init_voltage_acc()
+{
+	adc_init(6, ADC_ADJUST_RIGHT, ADC_REFS_INTERNAL_1_1,  ADC_PRESCALER_32);
+}
+
+void button_stop_enable()
+{
+	setbit(DDRC,6,0);
+	setbit(PORTC,6,1);
+}
+
+byte button_stop_is_pressed()
+{
+	if (getbit(PINC,6)) {return 0;}
+	return 1;
+}
+
+void door_terminal_enable()
+{
+	setbit(DDRC,7,0);
+	setbit(PORTC,7,1);
+}
+
+byte door_teminal_is_pressed()
+{
+	if (getbit(PINC,7)) {return 0;}
+	return 1;
+}
+
 void relay_siren_set_state(byte state)
 {
 	setbit(DDRC,1,1);
 	setbit(PORTC,1,state);	
 }
 
-//Установка вывода как входа
 void door_switch_enable()
 {
 	setbit(DDRD,6,0);
 	setbit(PORTD,6,1);
 }
 
-//Получение нажатия кнопки
-int door_switch_is_pressed()
+byte door_switch_is_pressed()
 {
 	if (getbit(PIND,6)) {return 0;}
 	return 1;	
 }
 
-//Установка вывода как входа
-//Кнопка открытия багажника
-void trunk_button_enable()
+void button_trunk_enable()
 {
 	setbit(DDRA,7,0);
 	setbit(PORTA,7,1);	
 }
 
-//Получение нажатия кнопки
-int trunk_button_is_pressed()
+byte button_trunk_is_pressed()
 {
 	if (getbit(PINA,7)) {return 0;}
 	return 1;
@@ -81,7 +105,7 @@ void keychain_open_enable()
 	setbit(PORTA,5,1);	
 }
 
-int keychain_open_is_pressed()
+byte keychain_open_is_pressed()
 {
 	if (getbit(PINA,5)) {return 0;}
 	return 1;
@@ -93,7 +117,7 @@ void keychain_close_enable()
 	setbit(PORTA,4,1);	
 }
 
-int keychain_close_is_pressed()
+byte keychain_close_is_pressed()
 {
 	if (getbit(PINA,4)) {return 0;}
 	return 1;
@@ -204,29 +228,5 @@ void button_door_4_enable()
 int button_door_4_is_pressed()
 {
 	if (getbit(PINA,3)) {return 0;}
-	return 1;
-}
-
-void door_terminal_enable()
-{
-	setbit(DDRC,7,0);
-	setbit(PORTC,7,1);
-}
-
-int door_terminal_is_pressed()
-{
-	if (getbit(PINC,7)) {return 0;}
-	return 1;
-}
-
-void stop_terminal_enable()
-{
-	setbit(DDRC,6,0);
-	setbit(PORTC,6,1);
-}
-
-int stop_terminal_is_pressed()
-{
-	if (getbit(PINC,6)) {return 0;}
 	return 1;
 }

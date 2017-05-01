@@ -20,6 +20,13 @@
 int _current_state_device=1;
 typedef unsigned char byte;
 
+int get_voltage()
+{
+	int val=0;
+	val=adc_read_average(3)*ADC_VOLT_MULTIPLIER_MV;//+DIODE_CORRECTION;
+	return val;
+}
+
 int get_state_door_switch()
 {
 	door_switch_enable();
@@ -29,9 +36,9 @@ int get_state_door_switch()
 
 int get_state_trunk_button()
 {
-	trunk_button_enable();
+	button_trunk_enable();
 	_delay_ms(1);
-	return trunk_button_is_pressed();
+	return button_trunk_is_pressed();
 }
 
 int get_state_keychain_open()
@@ -51,7 +58,7 @@ int get_state_keychain_close()
 void button_enable()
 {
 	door_switch_enable();
-	trunk_button_enable();
+	button_trunk_enable();
 	keychain_close_enable();
 	keychain_open_enable();
 }
