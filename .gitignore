@@ -6,5 +6,4 @@
 bin
 debug
 obj
-*.txt
 *.workspace
