@@ -53,8 +53,8 @@ void button_stop_enable()
 
 byte button_stop_is_pressed()
 {
-	if (getbit(PINC,6)) {return 0;}
-	return 1;
+	if (getbit(PINC,6)) {return 1;}
+	return 0;
 }
 
 void door_terminal_enable()
@@ -65,8 +65,8 @@ void door_terminal_enable()
 
 byte door_terminal_is_pressed()
 {
-	if (getbit(PINC,7)) {return 0;}
-	return 1;
+	if (getbit(PINC,7)) {return 1;}
+	return 0;
 }
 
 void relay_siren_set_state(byte state)
