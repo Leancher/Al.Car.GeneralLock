@@ -17,7 +17,7 @@
 #define ACTUATOR_HOLD 300
 #define SIREN_BEEP_DURATION 100
 
-int door_is_opened=0;
+int car_driver_presence=0;
 int state_doors=1;
 typedef unsigned char byte;
 
@@ -178,8 +178,7 @@ void change_state_device()
 	else
 	{
 		state_doors=1;
-		//Ставим 0. Если дверь разблокирвоали, но не открывали, чтобы в след. раз они заблокировались.
-		door_is_opened=0;
+		car_driver_presence=0;
 	}
 }
 
@@ -211,43 +210,56 @@ void lock_doors()
 void check_car_driver_presence()
 {
 	static int index=0;
-	//Включено зажигание
+	static int stop_hold=0;
+	//Выполняется, если двигатель заведен
 	if (get_voltage()>8000)
 	{
-		//Выполняется первый раз
-		if (door_is_opened==0)
+		if (door_is_open()==1) //Двери открыты (разблокированы вручную)
 		{
-			//Дверь закрыты
-			if (door_terminal_is_pressed()==1)
-			{
-				//Нажата педаль тормоза
-				if (button_stop_is_pressed()==1)
-				{
-					//Задержка перед блокировкой дверей
-					if (index<20) 
-					{
-						index++;
-						return;
-					}
-					index=0;
-					set_state_door(0);
-					door_is_opened=1;
-					state_doors=0;
-				}
-			}
+			car_driver_presence=0;
+			state_doors=1; //Уставливаем состояние
+			if (pedal_stop_is_pressed()==1) stop_hold=1; //Фиксируем удержание педали
+			return; //Если двери открыты, ничего не делаем
 		}
-		else
+		
+		if (state_doors==0)//Если двери закрыты, то выходим из функции
 		{
-			if (door_terminal_is_pressed()==0) door_is_opened=0;
+			//Педаль нажата до открытия дверей, фиксируем состояние, чтобы двери не заблокирвоались сразу после 
+			if (pedal_stop_is_pressed()==1) stop_hold=1;
+			return; //Ничего не делаем
+		}		
+		//Кнопкой разблокировали двери (состояние 1)
+		//Педаль отпустили, сбросить состояние
+		if (pedal_stop_is_pressed()==0) stop_hold=0;
+		//Педаль все еще удерживается, выходим, чтобы не заблокирваоть дверь раньше
+		if (stop_hold==1) return;
+
+		if (car_driver_presence==0)
+		{
+			if (pedal_stop_is_pressed()==1)
+			{
+				//Задержка перед блокировкой дверей
+				if (index<20) 
+				{
+					index++;
+					return;
+				}
+				index=0;
+				car_driver_presence=1;
+				set_state_door(0);
+				state_doors=0;
+			}
 		}
 	}
 	else
 	{
-		if (door_is_opened==1)
+		//Двери уже разблокирвоаны, сбрасываем состояние
+		if (state_doors==1) car_driver_presence=0;
+
+		if (car_driver_presence==1)
 		{
 			set_state_door(1);
-			door_is_opened=0;
-			state_doors=1;
+			state_doors=1;			
 		}
 	}
 }
@@ -259,7 +271,7 @@ void button_enable()
 	keychain_close_enable();
 	keychain_open_enable();
 	button_stop_enable();
-	door_terminal_enable();
+	door_sensor_enable();
 	door_switch_enable();
 }
 

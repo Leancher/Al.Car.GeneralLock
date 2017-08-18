@@ -51,22 +51,22 @@ void button_stop_enable()
 	setbit(PORTC,6,1);
 }
 
-byte button_stop_is_pressed()
+byte pedal_stop_is_pressed()
 {
 	if (getbit(PINC,6)) {return 1;}
 	return 0;
 }
 
-void door_terminal_enable()
+void door_sensor_enable()
 {
 	setbit(DDRC,7,0);
 	setbit(PORTC,7,1);
 }
 
-byte door_terminal_is_pressed()
+byte door_is_open()
 {
-	if (getbit(PINC,7)) {return 1;}
-	return 0;
+	if (getbit(PINC,7)) {return 0;}
+	return 1;
 }
 
 void relay_siren_set_state(byte state)
