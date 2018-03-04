@@ -17,14 +17,14 @@
 #define ACTUATOR_HOLD 300
 #define SIREN_BEEP_DURATION 100
 
-int car_driver_presence=0;
-int state_doors=1;
+int car_driver_presence = 0;
+int state_doors = 1;
 typedef unsigned char byte;
 
 int get_voltage()
 {
-	int val=0;
-	val=adc_read_average(3)*ADC_VOLT_MULTIPLIER_MV;//+DIODE_CORRECTION;
+	int val = 0;
+	val = adc_read_average(3) * ADC_VOLT_MULTIPLIER_MV; //+DIODE_CORRECTION;
 	return val;
 }
 
@@ -101,11 +101,9 @@ void door_4_lock()
 	_delay_ms(ACTUATOR_HOLD);
 }
 
-
-
-void set_state_door(byte state)
+void set_state_door (byte state)
 {
-	if (state==1)
+	if (state == 1)
 	{
 		driver_locker_1_set_state(1);
 		_delay_ms(1);
@@ -167,16 +165,17 @@ void change_state_indicator()
 
 void change_state_device()
 {
-	//Уставновка состояния замков на противоположное от значения текущего состояния
-	if (state_doors==1) set_state_door(0);
-	if (state_doors==0) set_state_door(1);
+	door_switch_pressed = 1;
 	//Переключаем текущее состояние
 	if (state_doors==1)
 	{
+		set_state_door(0);
 		state_doors=0;
+		car_driver_presence=1;
 	}
 	else
 	{
+		set_state_door(1);
 		state_doors=1;
 		car_driver_presence=0;
 	}
@@ -227,11 +226,11 @@ void check_car_driver_presence()
 			//Педаль нажата до открытия дверей, фиксируем состояние, чтобы двери не заблокирвоались сразу после 
 			if (pedal_stop_is_pressed()==1) stop_hold=1;
 			return; //Ничего не делаем
-		}		
+		}
 		//Кнопкой разблокировали двери (состояние 1)
 		//Педаль отпустили, сбросить состояние
 		if (pedal_stop_is_pressed()==0) stop_hold=0;
-		//Педаль все еще удерживается, выходим, чтобы не заблокирваоть дверь раньше
+		//Педаль все еще удерживается, выходим, чтобы не заблокировать дверь раньше
 		if (stop_hold==1) return;
 
 		if (car_driver_presence==0)
