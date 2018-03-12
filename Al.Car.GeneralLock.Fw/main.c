@@ -165,13 +165,11 @@ void change_state_indicator()
 
 void change_state_device()
 {
-	door_switch_pressed = 1;
 	//Переключаем текущее состояние
 	if (state_doors==1)
 	{
 		set_state_door(0);
 		state_doors=0;
-		car_driver_presence=1;
 	}
 	else
 	{
